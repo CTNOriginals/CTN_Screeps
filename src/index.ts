@@ -1,4 +1,4 @@
-import { BaseRole, Builder, Harvester, Upgrader, ABaseRole, AnyRoleClass } from "roles";
+import { Builder, Harvester, Upgrader, AnyRoleClass } from "roles";
 
 export const creepData: {[key: string]: CreepInstance} = {}
 

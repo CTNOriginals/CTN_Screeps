@@ -1,5 +1,5 @@
 import { ABaseRole, BaseRole } from "./base";
-import { sortByDistance } from "utils";
+import { getBestEnergySource, sortByDistance } from "utils";
 
 export class Upgrader extends BaseRole implements ABaseRole {
 	constructor(public name: string) {
@@ -22,9 +22,9 @@ export class Upgrader extends BaseRole implements ABaseRole {
             }
         }
         else {
-            var sources = sortByDistance(this.creep.pos, this.creep.room.find(FIND_SOURCES));
-            if(this.creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-                this.creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+            var source = getBestEnergySource(this.creep);
+            if(this.creep.harvest(source) == ERR_NOT_IN_RANGE) {
+                this.creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         }
 	}

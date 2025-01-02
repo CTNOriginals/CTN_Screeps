@@ -10,7 +10,7 @@ export function validateCreeps() {
 		const targetCreeps = _.filter(Game.creeps, (c: Creep) => c.memory.role === def.role);
 		if (targetCreeps.length < def.targetCount) {
 			const name: string = `${def.role}${targetCreeps.length}`;
-			const response = def.spawn(name, mainSpawn);
+			def.spawn(name, mainSpawn);
 			creepData[name] = new CreepInstance(name);
 			return;
 		}
