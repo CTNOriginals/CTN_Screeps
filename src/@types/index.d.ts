@@ -1,3 +1,5 @@
+import { TSupplierState } from "roles";
+
 /* awd */
 declare global {
 	/*
@@ -15,13 +17,13 @@ declare global {
 		initiated: boolean;
 	}
 
-	type CreepRole = 'harvester' | 'upgrader' | 'builder';
+	type CreepRole = 'supplier';
 
 	interface CreepMemory {
 		role: CreepRole;
 		room: string;
 		working: boolean;
-		upgrading?: boolean;
+		state?: TSupplierState;
 	}
 
 	interface RoomPosition {
@@ -30,6 +32,22 @@ declare global {
 		readonly isOccupied: boolean;
 		getSurroundingPositions: () => RoomPosition[];
 		getUnoccupiedSpaces: (ignoreCreeps?: Creep[]) => RoomPosition[];
+	}
+
+	type EnergyReceivingStructureTypes =
+	| STRUCTURE_EXTENSION
+	| STRUCTURE_SPAWN
+	| STRUCTURE_TOWER
+	| STRUCTURE_STORAGE;
+
+	type EnergyReceivingStructures =
+	| StructureStorage
+	| StructureExtension
+	| StructureSpawn
+	| StructureTower;
+
+	interface Room {
+		getEnergyReceivingStructures: (owned?: boolean) => EnergyReceivingStructures[];
 	}
 
 	// Syntax for adding proprties to `global` (ex "global.log")

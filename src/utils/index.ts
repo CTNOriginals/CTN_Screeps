@@ -35,10 +35,10 @@ export function getBestEnergySource(creep: Creep) {
 	for (const source of sources) {
 		if (source === best) { continue; }
 
-		console.log(`-- source ${source.pos.x}x${source.pos.y} --`)
+		// console.log(`-- source ${source.pos.x}x${source.pos.y} --`)
 		let availableSpaces = source.pos.getUnoccupiedSpaces([creep]);
 
-		console.log(`availableSpaces: ${availableSpaces.length}`)
+		// console.log(`availableSpaces: ${availableSpaces.length}`)
 
 		//TODO Calculate how long a creep is gonna take
 		//TODO then compare it to the alternate path it needs to take instead of waiting on that creep

@@ -1,7 +1,6 @@
-import '@types/definitions';
+import 'definitions/definitions';
 
 import { creepData, CreepInstance, mainSpawn } from "index";
-import { BaseRole, Builder, Harvester, Upgrader } from "roles";
 import { validateCreeps } from "spawnManager";
 import { ErrorMapper } from "utils/ErrorMapper";
 
@@ -39,6 +38,9 @@ export const loop = ErrorMapper.wrapLoop(() => {
 	}
 
 	console.log(`\n---- LOOP ${loopCycle} ----`);
+
+	const room = mainSpawn.room;
+	console.log(room.controller!.safeModeAvailable)
 
 	for (const name in Memory.creeps) {
 		const creep = creepData[name];

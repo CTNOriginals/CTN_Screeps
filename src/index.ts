@@ -1,4 +1,5 @@
-import { Builder, Harvester, Upgrader, AnyRoleClass } from "roles";
+import { AnyRoleClass } from "roles";
+import { Supplier } from "roles";
 
 export const creepData: {[key: string]: CreepInstance} = {}
 
@@ -20,9 +21,7 @@ export class CreepInstance {
 	public get role() {
 		if (!this._role) {
 			switch (this.roleName) {
-				case "harvester": 	this._role = new Harvester(this.name); break;
-				case "upgrader": 	this._role = new Upgrader(this.name); break;
-				case "builder": 	this._role = new Builder(this.name); break;
+				case "supplier": 	this._role = new Supplier(this.name); break;
 			}
 		}
 

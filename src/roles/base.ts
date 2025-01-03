@@ -1,10 +1,6 @@
-import { creepData } from "index";
-import { Harvester } from "./harvester";
-import { Upgrader } from "./upgrader";
-import { capitalizeFirstLetter } from "utils";
-import { Builder } from "./builder";
+import { Supplier } from "./supplier";
 
-export type AnyRoleClass = Harvester | Upgrader | Builder;
+export type AnyRoleClass = Supplier;
 
 export class RoleDefinition {
 	constructor(
@@ -14,13 +10,18 @@ export class RoleDefinition {
 	) {}
 
 	public spawn(name: string, spawn: StructureSpawn): ScreepsReturnCode {
-		console.log(`spawning "${name}"`);
 
 		const response = spawn.spawnCreep(this.bodyParts, name, {memory: {
 			role: this.role,
 			room: spawn.room.name,
 			working: false
 		}});
+
+		if (response === 0) {
+			console.log(`spawning "${name}"`);
+		} else {
+			console.log(`Unable to spawn "${name}\nResponse: ${response}`);
+		}
 
 		return response;
 	}
@@ -35,9 +36,7 @@ export class RoleDefinition {
 }
 
 export const roleDefinitions: RoleDefinition[] = [
-	new RoleDefinition('harvester', [WORK, CARRY, MOVE], 1),
-	new RoleDefinition('upgrader', [WORK, CARRY, MOVE], 1),
-	new RoleDefinition('builder', [WORK, CARRY, MOVE], 1)
+	new RoleDefinition('supplier', [WORK, CARRY, MOVE], 4),
 ];
 
 export abstract class ABaseRole {
