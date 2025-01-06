@@ -1,3 +1,4 @@
+import { creepData } from "creepManager";
 import { Supplier } from "./supplier";
 
 export type AnyRoleClass = Supplier;
@@ -36,21 +37,27 @@ export class RoleDefinition {
 }
 
 export const roleDefinitions: RoleDefinition[] = [
-	new RoleDefinition('supplier', [WORK, CARRY, MOVE], 4),
+	new RoleDefinition('supplier', [WORK, CARRY, MOVE, MOVE], 5),
 ];
+
 
 export abstract class ABaseRole {
 	public abstract run(): void;
 }
 
-
 export class BaseRole implements ABaseRole {
+	public targetStructure: EnergyReceivingStructures | null;
+
 	constructor(public name: string) {
 		// Game.creeps[name].memory.role = 'harvester';
+		this.targetStructure = this.creep.memory.targetStructure ?? null;
 	}
 
 	public get creep() {
 		return Game.creeps[this.name];
+	}
+	public get creepInstance() {
+		return creepData[this.name];
 	}
 
 	public run() {}

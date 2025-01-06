@@ -1,6 +1,5 @@
 import { getBestEnergySource } from "utils";
 import { BaseRole, ABaseRole } from "./base";
-import { object } from "lodash";
 
 export const SupplierState = {
 	IDLE: 'Idle',
@@ -21,8 +20,7 @@ const structurePriority: EnergyReceivingStructureTypes[] = [
 ]
 
 export class Supplier extends BaseRole implements ABaseRole {
-	public state: TSupplierState = SupplierState.IDLE;
-	private targetStructure: EnergyReceivingStructures | null = null;
+	public state: TSupplierState;
 
 	constructor(public name: string) {
 		super(name);
@@ -33,10 +31,23 @@ export class Supplier extends BaseRole implements ABaseRole {
 		return this.creep.room;
 	}
 
+	public get controller() {
+		return Game.spawns['Spawn1'].room.controller as StructureController;
+	}
+
+	public get targetSource() {
+		return (this.creep.memory.targetSourceId === null) ? null : Game.getObjectById<Source>(this.creep.memory.targetSourceId!);
+	}
+	public set targetSource(value) {
+		this.creep.memory.targetSourceId = value?.id;
+	}
+
 	public run() {
 		if (
-			this.state !== SupplierState.HARVESTING && this.creep.store[RESOURCE_ENERGY] === 0 ||
-			this.state === SupplierState.IDLE && this.creep.store.getFreeCapacity() > 0
+			this.creep.store.getFreeCapacity() !== 0 && (
+				this.state !== SupplierState.HARVESTING && this.creep.store[RESOURCE_ENERGY] === 0 ||
+				this.state === SupplierState.IDLE && this.creep.store.getFreeCapacity() > 0
+			)
 		) {
 			this.state = SupplierState.HARVESTING;
 		} else if (this.creep.store.getFreeCapacity() === 0) {
@@ -53,12 +64,13 @@ export class Supplier extends BaseRole implements ABaseRole {
 			this.targetStructure = null;
 			for (const struc of structures) {
 				if (struc.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
-					this.state = SupplierState.SUPPLYING;
 					this.targetStructure = struc;
 					foundStructure = true;
 					break;
 				}
 			}
+
+			this.state = SupplierState.SUPPLYING;
 		}
 
 		switch (this.state) {
@@ -72,24 +84,31 @@ export class Supplier extends BaseRole implements ABaseRole {
 	}
 
 	private doHarvest() {
-		this.creep.say('🔄 harvest');
+		// this.creep.say('🔄 harvest');
+		if (this.targetSource === null) {
+			this.targetSource = getBestEnergySource(this.creep);
+		}
 
-		let source = getBestEnergySource(this.creep);
-		if(this.creep.harvest(source) == ERR_NOT_IN_RANGE) {
-			this.creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+		if (this.creep.harvest(this.targetSource) == ERR_NOT_IN_RANGE) {
+			if (!this.creepInstance.move(this.targetSource.pos)) {
+				this.targetSource = null;
+			}
+		}
+		else if (this.creep.store.getFreeCapacity() === 0) {
+			this.targetSource = null;
 		}
 	}
 
 	private doSupply() {
 		if (this.targetStructure !== null) {
-			this.creep.say('📦 supply');
+			// this.creep.say('📦 supply');
 			if (this.creep.transfer(this.targetStructure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
 				this.creep.moveTo(this.targetStructure, {visualizePathStyle: {stroke: '#ffffff'}});
 			}
 		} else {
-			this.creep.say('⚡ upgrade');
-			if (this.creep.upgradeController(this.creep.room.controller!) == ERR_NOT_IN_RANGE) {
-				this.creep.moveTo(this.creep.room.controller!.pos, {visualizePathStyle: {stroke: '#ffffff'}});
+			// this.creep.say('⚡ upgrade');
+			if (this.creep.upgradeController(this.controller) == ERR_NOT_IN_RANGE) {
+				this.creep.moveTo(this.controller.pos, {visualizePathStyle: {stroke: '#ffffff'}});
 			}
 		}
 	}

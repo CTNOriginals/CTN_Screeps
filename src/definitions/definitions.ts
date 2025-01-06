@@ -62,10 +62,10 @@ Object.defineProperty(RoomPosition.prototype, 'isOccupied', {
 	enumerable: false,   // Hides it from enumeration
 });
 
-RoomPosition.prototype.getSurroundingPositions = function (): RoomPosition[] {
+RoomPosition.prototype.getSurroundingPositions = function (): (RoomPosition | null)[] {
 	const instance = this as RoomPosition; // Explicitly cast 'this' to RoomPosition
-	const pos = (x: number, y: number): RoomPosition => {
-		return Game.rooms[instance.roomName].getPositionAt(x, y) ?? new RoomPosition(x, y, instance.roomName);
+	const pos = (x: number, y: number): (RoomPosition | null) => {
+		return Game.rooms[instance.roomName].getPositionAt(x, y) ?? null;
 	}
 	return [
 		pos(instance.x - 1, instance.y - 1), 	pos(instance.x, instance.y - 1), 	pos(instance.x + 1, instance.y - 1),
@@ -80,10 +80,9 @@ RoomPosition.prototype.getUnoccupiedSpaces = function (ignoreCreeps: Creep[] = [
 	let out: RoomPosition[] = [];
 
 	for (const pos of surroundings) {
-		if (
-			(pos !== null && !pos.isOccupied) ||
-			(pos.isOccupiedBy === LOOK_CREEPS && includesAll(pos.lookFor('creep'), ignoreCreeps))
-		) {
+		if (pos !== null && (
+			!pos?.isOccupied || (pos.isOccupiedBy === LOOK_CREEPS && includesAll(pos.lookFor('creep'), ignoreCreeps))
+		)) {
 			out.push(pos);
 		}
 	}
@@ -112,5 +111,18 @@ Room.prototype.getEnergyReceivingStructures = function (owned: boolean = false):
         return false;
     }) as EnergyReceivingStructures[];
 }
+
+Room.prototype.isValidPath = function (origin: RoomPosition, target: RoomPosition): boolean {
+	const instance = this as Room; // Explicitly cast 'this' to RoomPosition
+	let movePath = instance.findPath(origin, target);
+
+	const dest = movePath[movePath.length - 1];
+	if (dest.x !== target.x || dest.y !== target.y) {
+		return false;
+	}
+
+	return true;
+}
+
 
 export {}

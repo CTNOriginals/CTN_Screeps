@@ -1,6 +1,6 @@
 import 'definitions/definitions';
 
-import { creepData, CreepInstance, mainSpawn } from "index";
+import { creepData, CreepInstance } from "creepManager";
 import { validateCreeps } from "spawnManager";
 import { ErrorMapper } from "utils/ErrorMapper";
 
@@ -28,6 +28,8 @@ let loopCycle = 0;
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
+	// const t0 = process.hrtime;
+
 	if (!Memory.initiated) {
 		Init();
 		Memory.initiated = true;
@@ -38,11 +40,16 @@ export const loop = ErrorMapper.wrapLoop(() => {
 	}
 
 	console.log(`\n---- LOOP ${loopCycle} ----`);
+	// console.log(Object.keys(Game.creeps).length)
 
-	const room = mainSpawn.room;
-	console.log(room.controller!.safeModeAvailable)
+	// const room = mainSpawn.room;
+	// console.log(room.controller!.safeModeAvailable)
 
 	for (const name in Memory.creeps) {
+		// if (creepData[name].roleName === undefined) {
+		// 	Game.creeps[name].memory.role = 'supplier';
+		// 	creepData[name] = new CreepInstance(name);
+		// }
 		const creep = creepData[name];
 
 		// Automatically delete memory of missing creeps
@@ -58,6 +65,14 @@ export const loop = ErrorMapper.wrapLoop(() => {
 	validateCreeps();
 
 	loopCycle++;
+
+	if (Game.cpu.tickLimit !== Infinity) {
+		console.log(`---- CPU  ${Math.round(Game.cpu.getUsed() * 100) / 100}/${Game.cpu.tickLimit} ----`)
+	}
+	else {
+		// console.log(`Time: ${process.hrtime() - t0}`)
+	}
 });
 
 
+//TODO Make a queue system for each thing that creeps need to interact with to be able to know beforehand where creeps are going

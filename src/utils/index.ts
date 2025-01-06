@@ -33,7 +33,7 @@ export function getBestEnergySource(creep: Creep) {
 
 	let best = null;
 	for (const source of sources) {
-		if (source === best) { continue; }
+		if (source === best || !creep.room.isValidPath(creep.pos, source.pos)) { continue; }
 
 		// console.log(`-- source ${source.pos.x}x${source.pos.y} --`)
 		let availableSpaces = source.pos.getUnoccupiedSpaces([creep]);
@@ -49,6 +49,10 @@ export function getBestEnergySource(creep: Creep) {
 	}
 
 	return best ?? sources[0];
+}
+
+export function compareCoordinates(a: RoomPosition, b: RoomPosition): Boolean {
+	return (a.x === b.x && a.y === b.y);
 }
 
 

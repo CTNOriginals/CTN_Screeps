@@ -24,13 +24,15 @@ declare global {
 		room: string;
 		working: boolean;
 		state?: TSupplierState;
+		targetStructure?: EnergyReceivingStructures | null;
+		targetSourceId?: string | null;
 	}
 
 	interface RoomPosition {
 		terrainType: Terrain;
 		readonly isOccupiedBy: LookConstant | null;
 		readonly isOccupied: boolean;
-		getSurroundingPositions: () => RoomPosition[];
+		getSurroundingPositions: () => (RoomPosition | null)[];
 		getUnoccupiedSpaces: (ignoreCreeps?: Creep[]) => RoomPosition[];
 	}
 
@@ -48,6 +50,7 @@ declare global {
 
 	interface Room {
 		getEnergyReceivingStructures: (owned?: boolean) => EnergyReceivingStructures[];
+		isValidPath: (origin: RoomPosition, target: RoomPosition) => boolean;
 	}
 
 	// Syntax for adding proprties to `global` (ex "global.log")

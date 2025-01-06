@@ -1,6 +1,5 @@
-import { creepData, CreepInstance, mainSpawn } from "index";
+import { creepData, CreepInstance } from "creepManager";
 import { roleDefinitions } from "roles";
-import { capitalizeFirstLetter } from "utils";
 
 export function validateCreeps() {
 	if (Game.spawns['Spawn1'].spawning !== null) { return; }
