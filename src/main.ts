@@ -1,9 +1,8 @@
-import 'definitions/definitions';
+import 'definitions';
 
 import { creepData, CreepInstance } from "creepManager";
 import { validateCreeps } from "spawnManager";
 import { ErrorMapper } from "utils/ErrorMapper";
-
 
 
 // RoomPosition.prototype.terrainType = (this: RoomPosition) => {
@@ -24,11 +23,12 @@ function OnReload() {
 	}
 }
 
-let loopCycle = 0;
+let loopCycle: number = 0;
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
-	// const t0 = process.hrtime;
+	const date = new Date();
+	const t0 = date.getTime();
 
 	if (!Memory.initiated) {
 		Init();
@@ -40,6 +40,8 @@ export const loop = ErrorMapper.wrapLoop(() => {
 	}
 
 	console.log(`\n---- LOOP ${loopCycle} ----`);
+	// console.log(Game.cpu.tickLimit)
+	// let getset =
 	// console.log(Object.keys(Game.creeps).length)
 
 	// const room = mainSpawn.room;

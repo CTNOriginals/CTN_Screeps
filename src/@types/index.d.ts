@@ -24,7 +24,7 @@ declare global {
 		room: string;
 		working: boolean;
 		state?: TSupplierState;
-		targetStructure?: EnergyReceivingStructures | null;
+		targetStructureId?: string | null;
 		targetSourceId?: string | null;
 	}
 
@@ -51,6 +51,10 @@ declare global {
 	interface Room {
 		getEnergyReceivingStructures: (owned?: boolean) => EnergyReceivingStructures[];
 		isValidPath: (origin: RoomPosition, target: RoomPosition) => boolean;
+	}
+
+	interface Structure {
+		isEnergyReceivingStructures: boolean
 	}
 
 	// Syntax for adding proprties to `global` (ex "global.log")

@@ -35,13 +35,6 @@ export class Supplier extends BaseRole implements ABaseRole {
 		return Game.spawns['Spawn1'].room.controller as StructureController;
 	}
 
-	public get targetSource() {
-		return (this.creep.memory.targetSourceId === null) ? null : Game.getObjectById<Source>(this.creep.memory.targetSourceId!);
-	}
-	public set targetSource(value) {
-		this.creep.memory.targetSourceId = value?.id;
-	}
-
 	public run() {
 		if (
 			this.creep.store.getFreeCapacity() !== 0 && (
@@ -100,16 +93,29 @@ export class Supplier extends BaseRole implements ABaseRole {
 	}
 
 	private doSupply() {
-		if (this.targetStructure !== null) {
-			// this.creep.say('📦 supply');
-			if (this.creep.transfer(this.targetStructure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-				this.creep.moveTo(this.targetStructure, {visualizePathStyle: {stroke: '#ffffff'}});
+		if (this.targetStructure === null) {
+			this.targetStructure = this.controller;
+		}
+
+		const transferMethod = () => {
+			if (this.targetStructure!.structureType === 'controller') {
+				return this.creep.upgradeController(this.targetStructure as StructureController)
+			} else {
+				return this.creep.transfer(this.targetStructure!, RESOURCE_ENERGY)
 			}
-		} else {
-			// this.creep.say('⚡ upgrade');
-			if (this.creep.upgradeController(this.controller) == ERR_NOT_IN_RANGE) {
-				this.creep.moveTo(this.controller.pos, {visualizePathStyle: {stroke: '#ffffff'}});
+		}
+
+		if (transferMethod() == ERR_NOT_IN_RANGE) {
+			if (!this.creepInstance.move(this.targetStructure.pos)) {
+				this.targetStructure = null;
 			}
+		}
+
+		if (this.creep.store.getFreeCapacity() === 0 || (
+			this.targetStructure?.isEnergyReceivingStructures &&
+			(this.targetStructure as EnergyReceivingStructures).store.getFreeCapacity() === 0
+		)) {
+			this.targetStructure = null;
 		}
 	}
 }

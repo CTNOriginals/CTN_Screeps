@@ -46,11 +46,11 @@ export abstract class ABaseRole {
 }
 
 export class BaseRole implements ABaseRole {
-	public targetStructure: EnergyReceivingStructures | null;
+	// public targetStructure: EnergyReceivingStructures | null;
 
 	constructor(public name: string) {
 		// Game.creeps[name].memory.role = 'harvester';
-		this.targetStructure = this.creep.memory.targetStructure ?? null;
+		// this.targetStructure = this.creep.memory.targetStructure ?? null;
 	}
 
 	public get creep() {
@@ -58,6 +58,20 @@ export class BaseRole implements ABaseRole {
 	}
 	public get creepInstance() {
 		return creepData[this.name];
+	}
+
+	public get targetSource() {
+		return (this.creep.memory.targetSourceId === null) ? null : Game.getObjectById<Source>(this.creep.memory.targetSourceId!);
+	}
+	public set targetSource(value) {
+		this.creep.memory.targetSourceId = value?.id;
+	}
+
+	public get targetStructure(): Structure | null {
+		return (this.creep.memory.targetStructureId === null) ? null : Game.getObjectById<Structure>(this.creep.memory.targetStructureId!);
+	}
+	public set targetStructure(value: Structure | null) {
+		this.creep.memory.targetStructureId = value?.id;
 	}
 
 	public run() {}
