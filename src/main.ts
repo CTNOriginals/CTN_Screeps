@@ -1,13 +1,8 @@
 import 'definitions';
 
 import { creepData, CreepInstance } from "creepManager";
-import { validateCreeps } from "spawnManager";
+import { validateCreeps } from "managers/spawnManager";
 import { ErrorMapper } from "utils/ErrorMapper";
-
-
-// RoomPosition.prototype.terrainType = (this: RoomPosition) => {
-// 	this.
-// }
 
 //? This functions runs once the first spawn is placed
 function Init() {
@@ -22,6 +17,7 @@ function OnReload() {
 		creepData[name] = new CreepInstance(name)
 	}
 }
+
 
 let loopCycle: number = 0;
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change

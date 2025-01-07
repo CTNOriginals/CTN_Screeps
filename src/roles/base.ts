@@ -37,7 +37,7 @@ export class RoleDefinition {
 }
 
 export const roleDefinitions: RoleDefinition[] = [
-	new RoleDefinition('supplier', [WORK, CARRY, MOVE, MOVE], 5),
+	new RoleDefinition('supplier', [WORK, WORK, CARRY, MOVE, MOVE, MOVE], 10),
 ];
 
 
@@ -64,15 +64,22 @@ export class BaseRole implements ABaseRole {
 		return (this.creep.memory.targetSourceId === null) ? null : Game.getObjectById<Source>(this.creep.memory.targetSourceId!);
 	}
 	public set targetSource(value) {
-		this.creep.memory.targetSourceId = value?.id;
+		this.creep.memory.targetSourceId = value?.id ?? null;
 	}
 
-	public get targetStructure(): Structure | null {
-		return (this.creep.memory.targetStructureId === null) ? null : Game.getObjectById<Structure>(this.creep.memory.targetStructureId!);
+	public get targetStructure(): RoomPOI | null {
+		return (this.creep.memory.targetStructureId === null) ? null : Game.getObjectById<RoomPOI>(this.creep.memory.targetStructureId!);
 	}
-	public set targetStructure(value: Structure | null) {
-		this.creep.memory.targetStructureId = value?.id;
+	public set targetStructure(value: RoomPOI | null) {
+		this.creep.memory.targetStructureId = value?.id ?? null;
 	}
+
+	// public get constructionSite(): ConstructionSite | null {
+	// 	return (this.creep.memory.constructionSiteId === null) ? null : Game.getObjectById<ConstructionSite>(this.creep.memory.constructionSiteId!);
+	// }
+	// public set constructionSite(value: ConstructionSite | null) {
+	// 	this.creep.memory.constructionSiteId = value?.id ?? null;
+	// }
 
 	public run() {}
 }

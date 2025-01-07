@@ -11,13 +11,17 @@ declare global {
 	Interfaces matching on name from @types/screeps will be merged. This is how you can extend the 'built-in' interfaces from @types/screeps.
 	*/
 	// Memory extension samples
+	type CreepRole = 'supplier';
+
+	type Building = Structure | ConstructionSite;
+	type RoomPOI = Building | Source;
+
 	interface Memory {
 		uuid: number;
 		log: any;
 		initiated: boolean;
 	}
 
-	type CreepRole = 'supplier';
 
 	interface CreepMemory {
 		role: CreepRole;
@@ -26,6 +30,7 @@ declare global {
 		state?: TSupplierState;
 		targetStructureId?: string | null;
 		targetSourceId?: string | null;
+		constructionSiteId?: string | null;
 	}
 
 	interface RoomPosition {
@@ -50,6 +55,7 @@ declare global {
 
 	interface Room {
 		getEnergyReceivingStructures: (owned?: boolean) => EnergyReceivingStructures[];
+		getConstructionSites: (owned?: boolean) => ConstructionSite[];
 		isValidPath: (origin: RoomPosition, target: RoomPosition) => boolean;
 	}
 

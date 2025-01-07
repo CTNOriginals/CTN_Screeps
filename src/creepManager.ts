@@ -58,7 +58,6 @@ export class CreepInstance {
 			let step = this.movePath[i];
 			let next = this.movePath[i + 1];
 			this.creep.room.visual.line(step.x, step.y, next.x, next.y, {color: '#ffffff48'});
-
 		}
 
 		this.creep.move(this.movePath[0].direction);
